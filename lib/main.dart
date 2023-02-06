@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:namer_app/views/home/view.dart';
-import 'package:namer_app/views/home/view_state.dart';
+import 'package:namer_app/views/name_generator/view.dart';
+import 'package:namer_app/views/name_generator/view_state.dart';
 import 'package:provider/provider.dart';
 
 void main() {

@@ -1,31 +1,60 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:namer_app/views/home/view_state.dart';
-import 'package:namer_app/views/home/widgets/big_card.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:namer_app/views/favorites/view.dart';
+import 'package:namer_app/views/name_generator/view.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  int selectedIndex = 0;
+  @override
   Widget build(BuildContext context) {
-    HomeState state = context.watch<HomeState>();
-    WordPair pair = state.currentWord;
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = const NameGeneratorView();
+        break;
+      case 1:
+        page = const FavoritesView();
+        break;
+      default:
+        throw Exception("Invalid index");
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
           children: [
-            BigCard(pair: pair),
-            const SizedBox(height: 10),
-            ElevatedButton(
-                onPressed: () {
-                  state.getNext();
-                },
-                child: const Text("Next"))
+            SafeArea(
+                child: NavigationRail(
+              extended: constraints.maxWidth >= 600,
+              destinations: const [
+                NavigationRailDestination(
+                    icon: Icon(Icons.home), label: Text("Home")),
+                NavigationRailDestination(
+                    icon: Icon(Icons.favorite), label: Text("Favorites")),
+              ],
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (value) {
+                setState(() {
+                  selectedIndex = value;
+                });
+              },
+            )),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
+              ),
+            )
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }
